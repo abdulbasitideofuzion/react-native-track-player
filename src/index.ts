@@ -12,11 +12,11 @@ import {
   RepeatMode,
 } from './interfaces'
 
-const { TrackPlayerModule: TrackPlayer } = NativeModules
+// const { MusicPlayerModule: TrackPlayer } = NativeModules
 
 const { TrackPlayerModule: MusicPlayer } = NativeModules
 
-const emitter = Platform.OS !== 'android' ? new NativeEventEmitter(TrackPlayer) : DeviceEventEmitter
+const emitter = Platform.OS !== 'android' ? new NativeEventEmitter(MusicPlayer) : DeviceEventEmitter
 
 // MARK: - Helpers
 
@@ -29,7 +29,7 @@ function resolveImportedPath(path?: number | string) {
 
 /** FOR SETUP PLAYER */
 async function setupPlayer(options: PlayerOptions = {}): Promise<void> {
-  return TrackPlayer.setupPlayer(options || {})
+  return MusicPlayer.setupPlayer(options || {})
 }
 
 async function setupMusicPlayer(options: PlayerOptions = {}): Promise<void> {
@@ -39,7 +39,7 @@ async function setupMusicPlayer(options: PlayerOptions = {}): Promise<void> {
 
 function destroy() {
     MusicPlayer.destroy()
-  return TrackPlayer.destroy()
+  return MusicPlayer.destroy()
 }
 
 type ServiceHandler = () => Promise<void>
@@ -48,7 +48,7 @@ function registerPlaybackService(factory: () => ServiceHandler) {
   if (Platform.OS === 'android') {
     // Registers the headless task
     AppRegistry.registerHeadlessTask('MusicPlayer',factory)
-    AppRegistry.registerHeadlessTask('TrackPlayer', factory)
+    // AppRegistry.registerHeadlessTask('TrackPlayer', factory)
   } else {
     // Initializes and runs the service in the next tick
     setImmediate(factory())
@@ -82,7 +82,7 @@ async function add(tracks: Track | Track[], insertBeforeIndex?: number): Promise
   }
 
   // Note: we must be careful about passing nulls to non nullable parameters on Android.
-  return TrackPlayer.add(tracks, insertBeforeIndex === undefined ? -1 : insertBeforeIndex)
+  return MusicPlayer.add(tracks, insertBeforeIndex === undefined ? -1 : insertBeforeIndex)
 }
 
 async function addMusic(tracks: Track | Track[], insertBeforeIndex?: number): Promise<void> {
@@ -114,7 +114,7 @@ async function remove(tracks: number | number[]): Promise<void> {
     tracks = [tracks]
   }
 
-  return TrackPlayer.remove(tracks)
+  return MusicPlayer.remove(tracks)
 }
 
 
@@ -128,19 +128,19 @@ async function removeMusic(tracks: number | number[]): Promise<void> {
 
 
 async function removeUpcomingTracks(): Promise<void> {
-  return TrackPlayer.removeUpcomingTracks()
+  return MusicPlayer.removeUpcomingTracks()
 }
 
 async function skip(trackIndex: number): Promise<void> {
-  return TrackPlayer.skip(trackIndex)
+  return MusicPlayer.skip(trackIndex)
 }
 
 async function skipToNext(): Promise<void> {
-  return TrackPlayer.skipToNext()
+  return MusicPlayer.skipToNext()
 }
 
 async function skipToPrevious(): Promise<void> {
-  return TrackPlayer.skipToPrevious()
+  return MusicPlayer.skipToPrevious()
 }
 
 // MARK: - Control Center / Notifications API
@@ -158,7 +158,7 @@ async function updateOptions(options: MetadataOptions = {}): Promise<void> {
   options.rewindIcon = resolveImportedPath(options.rewindIcon)
   options.forwardIcon = resolveImportedPath(options.forwardIcon)
 
-  return TrackPlayer.updateOptions(options)
+  return MusicPlayer.updateOptions(options)
 }
 
 async function updateOptionsMusic(options: MetadataOptions = {}): Promise<void> {
@@ -184,11 +184,11 @@ async function updateMetadataForTrack(trackIndex: number, metadata: TrackMetadat
   // Resolve the artwork URL
   metadata.artwork = resolveImportedPath(metadata.artwork)
 
-  return TrackPlayer.updateMetadataForTrack(trackIndex, metadata)
+  return MusicPlayer.updateMetadataForTrack(trackIndex, metadata)
 }
 
 function clearNowPlayingMetadata(): Promise<void> {
-  return TrackPlayer.clearNowPlayingMetadata()
+  return MusicPlayer.clearNowPlayingMetadata()
 }
 function clearNowPlayingMetadataMusic(): Promise<void> {
   return MusicPlayer.clearNowPlayingMetadata()
@@ -200,17 +200,17 @@ function updateNowPlayingMetadata(metadata: NowPlayingMetadata): Promise<void> {
   // Resolve the artwork URL
   metadata.artwork = resolveImportedPath(metadata.artwork)
 
-  return TrackPlayer.updateNowPlayingMetadata(metadata)
+  return MusicPlayer.updateNowPlayingMetadata(metadata)
 }
 
 // MARK: - Player API
 
 async function reset(): Promise<void> {
-  return TrackPlayer.reset()
+  return MusicPlayer.reset()
 }
 
 async function play(): Promise<void> {
-  return TrackPlayer.play()
+  return MusicPlayer.play()
 }
 
 async function playMusic(): Promise<void> {
@@ -218,72 +218,72 @@ async function playMusic(): Promise<void> {
 }
 
 async function pause(): Promise<void> {
-  return TrackPlayer.pause()
+  return MusicPlayer.pause()
 }
 async function pauseMusic(): Promise<void> {
   return MusicPlayer.pause()
 }
 
 async function stop(): Promise<void> {
-  return TrackPlayer.stop()
+  return MusicPlayer.stop()
 }
 
 async function seekTo(position: number): Promise<void> {
-  return TrackPlayer.seekTo(position)
+  return MusicPlayer.seekTo(position)
 }
 
 async function setVolume(level: number): Promise<void> {
-  return TrackPlayer.setVolume(level)
+  return MusicPlayer.setVolume(level)
 }
 
 async function setRate(rate: number): Promise<void> {
-  return TrackPlayer.setRate(rate)
+  return MusicPlayer.setRate(rate)
 }
 
 async function setRepeatMode(mode: RepeatMode): Promise<RepeatMode> {
-  return TrackPlayer.setRepeatMode(mode)
+  return MusicPlayer.setRepeatMode(mode)
 }
 
 // MARK: - Getters
 
 async function getVolume(): Promise<number> {
-  return TrackPlayer.getVolume()
+  return MusicPlayer.getVolume()
 }
 
 async function getRate(): Promise<number> {
-  return TrackPlayer.getRate()
+  return MusicPlayer.getRate()
 }
 
 async function getTrack(trackIndex: number): Promise<Track> {
-  return TrackPlayer.getTrack(trackIndex)
+  return MusicPlayer.getTrack(trackIndex)
 }
 
 async function getQueue(): Promise<Track[]> {
-  return TrackPlayer.getQueue()
+  return MusicPlayer.getQueue()
 }
 
 async function getCurrentTrack(): Promise<number> {
-  return TrackPlayer.getCurrentTrack()
+  return MusicPlayer.getCurrentTrack()
 }
 
 async function getDuration(): Promise<number> {
-  return TrackPlayer.getDuration()
+  return MusicPlayer.getDuration()
 }
 
 async function getBufferedPosition(): Promise<number> {
-  return TrackPlayer.getBufferedPosition()
+  return MusicPlayer.getBufferedPosition()
 }
 
 async function getPosition(): Promise<number> {
-  return TrackPlayer.getPosition()
+  return MusicPlayer.getPosition()
 }
 
 async function getState(): Promise<State> {
-  return TrackPlayer.getState()
+  return MusicPlayer.getState()
 }
 
 async function getRepeatMode(): Promise<RepeatMode> {
-  return TrackPlayer.getRepeatMode()
+  return MusicPlayer.getRepeatMode()
 }
 
 export * from './hooks'
