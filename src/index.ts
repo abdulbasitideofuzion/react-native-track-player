@@ -13,6 +13,9 @@ import {
 } from './interfaces'
 
 const { TrackPlayerModule: TrackPlayer } = NativeModules
+
+const { TrackPlayerModule: MusicPlayer } = NativeModules
+
 const emitter = Platform.OS !== 'android' ? new NativeEventEmitter(TrackPlayer) : DeviceEventEmitter
 
 // MARK: - Helpers
@@ -24,18 +27,27 @@ function resolveImportedPath(path?: number | string) {
 
 // MARK: - General API
 
+/** FOR SETUP PLAYER */
 async function setupPlayer(options: PlayerOptions = {}): Promise<void> {
   return TrackPlayer.setupPlayer(options || {})
 }
 
+async function setupMusicPlayer(options: PlayerOptions = {}): Promise<void> {
+  return MusicPlayer.setupPlayer(options || {})
+}
+
+
 function destroy() {
+    MusicPlayer.destroy()
   return TrackPlayer.destroy()
 }
 
 type ServiceHandler = () => Promise<void>
+
 function registerPlaybackService(factory: () => ServiceHandler) {
   if (Platform.OS === 'android') {
     // Registers the headless task
+    AppRegistry.registerHeadlessTask('MusicPlayer',factory)
     AppRegistry.registerHeadlessTask('TrackPlayer', factory)
   } else {
     // Initializes and runs the service in the next tick
@@ -73,6 +85,30 @@ async function add(tracks: Track | Track[], insertBeforeIndex?: number): Promise
   return TrackPlayer.add(tracks, insertBeforeIndex === undefined ? -1 : insertBeforeIndex)
 }
 
+async function addMusic(tracks: Track | Track[], insertBeforeIndex?: number): Promise<void> {
+  // Clone the array before modifying it
+  if (Array.isArray(tracks)) {
+    tracks = [...tracks]
+  } else {
+    tracks = [tracks]
+  }
+
+  if (tracks.length < 1) return
+
+  for (let i = 0; i < tracks.length; i++) {
+    // Clone the object before modifying it
+    tracks[i] = { ...tracks[i] }
+
+    // Resolve the URLs
+    tracks[i].url = resolveImportedPath(tracks[i].url)
+    tracks[i].artwork = resolveImportedPath(tracks[i].artwork)
+  }
+
+  // Note: we must be careful about passing nulls to non nullable parameters on Android.
+  return MusicPlayer.add(tracks, insertBeforeIndex === undefined ? -1 : insertBeforeIndex)
+}
+
+
 async function remove(tracks: number | number[]): Promise<void> {
   if (!Array.isArray(tracks)) {
     tracks = [tracks]
@@ -80,6 +116,16 @@ async function remove(tracks: number | number[]): Promise<void> {
 
   return TrackPlayer.remove(tracks)
 }
+
+
+async function removeMusic(tracks: number | number[]): Promise<void> {
+  if (!Array.isArray(tracks)) {
+    tracks = [tracks]
+  }
+
+  return MusicPlayer.removeMusic(tracks)
+}
+
 
 async function removeUpcomingTracks(): Promise<void> {
   return TrackPlayer.removeUpcomingTracks()
@@ -115,6 +161,22 @@ async function updateOptions(options: MetadataOptions = {}): Promise<void> {
   return TrackPlayer.updateOptions(options)
 }
 
+async function updateOptionsMusic(options: MetadataOptions = {}): Promise<void> {
+  options = { ...options }
+
+  // Resolve the asset for each icon
+  options.icon = resolveImportedPath(options.icon)
+  options.playIcon = resolveImportedPath(options.playIcon)
+  options.pauseIcon = resolveImportedPath(options.pauseIcon)
+  options.stopIcon = resolveImportedPath(options.stopIcon)
+  options.previousIcon = resolveImportedPath(options.previousIcon)
+  options.nextIcon = resolveImportedPath(options.nextIcon)
+  options.rewindIcon = resolveImportedPath(options.rewindIcon)
+  options.forwardIcon = resolveImportedPath(options.forwardIcon)
+
+  return MusicPlayer.updateOptions(options)
+}
+
 async function updateMetadataForTrack(trackIndex: number, metadata: TrackMetadataBase): Promise<void> {
   // Clone the object before modifying it
   metadata = Object.assign({}, metadata)
@@ -128,7 +190,9 @@ async function updateMetadataForTrack(trackIndex: number, metadata: TrackMetadat
 function clearNowPlayingMetadata(): Promise<void> {
   return TrackPlayer.clearNowPlayingMetadata()
 }
-
+function clearNowPlayingMetadataMusic(): Promise<void> {
+  return MusicPlayer.clearNowPlayingMetadata()
+}
 function updateNowPlayingMetadata(metadata: NowPlayingMetadata): Promise<void> {
   // Clone the object before modifying it
   metadata = Object.assign({}, metadata)
@@ -149,8 +213,15 @@ async function play(): Promise<void> {
   return TrackPlayer.play()
 }
 
+async function playMusic(): Promise<void> {
+  return MusicPlayer.play()
+}
+
 async function pause(): Promise<void> {
   return TrackPlayer.pause()
+}
+async function pauseMusic(): Promise<void> {
+  return MusicPlayer.pause()
 }
 
 async function stop(): Promise<void> {
