@@ -166,6 +166,16 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     }
 
     @ReactMethod
+    public void setupPlayerTrack(ReadableMap data, final Promise promise) {
+
+        LOG.d(data);
+
+        final Bundle options = Arguments.toBundle(data);
+
+        waitForConnection(() -> binder.setupPlayer(options, promise));
+    }
+
+    @ReactMethod
     public void destroy() {
         // Ignore if it was already destroyed
         if (binder == null && !connecting) return;

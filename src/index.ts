@@ -37,7 +37,7 @@ async function setupPlayer(options: PlayerOptions = {}): Promise<void> {
 }
 
 async function setupTrackPlayer(options: PlayerOptions = {}): Promise<void> {
-  return TrackPlayer.setupPlayer(options || {})
+  return TrackPlayer.setupPlayerTrack(options || {})
 }
 
 
