@@ -10,7 +10,10 @@ export const usePlaybackState = () => {
       const playerState = await TrackPlayer.getState()
       setState(playerState)
     }
-
+    async function setPlayerStateTrack() {
+      const playerState = await TrackPlayer.getState()
+      setState(playerState)
+    }
     setPlayerState()
 
     const sub = TrackPlayer.addEventListener(Event.PlaybackState, data => {

@@ -48,11 +48,21 @@ function destroy() {
 
 type ServiceHandler = () => Promise<void>
 
+type ServiceHandlerTrack = () => Promise<void>
+function registerPlaybackServiceTrack(factory: () => ServiceHandlerTrack) {
+  if (Platform.OS === 'android') {
+    // Registers the headless task
+    AppRegistry.registerHeadlessTask('TrackPlayer', factory)
+  } else {
+    // Initializes and runs the service in the next tick
+    setImmediate(factory())
+  }
+}
+
 function registerPlaybackService(factory: () => ServiceHandler) {
   if (Platform.OS === 'android') {
     // Registers the headless task
     AppRegistry.registerHeadlessTask('MusicPlayer',factory)
-    AppRegistry.registerHeadlessTask('TrackPlayer', factory)
   } else {
     // Initializes and runs the service in the next tick
     setImmediate(factory())
@@ -329,6 +339,7 @@ export default {
   setupPlayer,
   destroy,
   registerPlaybackService,
+  registerPlaybackServiceTrack,
   addEventListener,
   setupTrackPlayer,
   addEventListenerTrack,
@@ -375,6 +386,7 @@ export default {
   playTrack,
   pauseTrack,
   stopTrack,
+
 
 
   // MARK: - Getters
