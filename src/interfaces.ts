@@ -1,5 +1,8 @@
 import { NativeModules } from 'react-native'
 const { TrackPlayerModule: TrackPlayer } = NativeModules
+const { TrackPlayerModule: MusicPlayer } = NativeModules
+
+
 
 export enum IOSCategory {
   Playback = 'playback',
@@ -87,6 +90,7 @@ export enum RatingType {
   FourStars = TrackPlayer.RATING_4_STARS,
   FiveStars = TrackPlayer.RATING_5_STARS,
   Percentage = TrackPlayer.RATING_PERCENTAGE,
+
 }
 
 export interface FeedbackOptions {
@@ -113,6 +117,22 @@ export enum Capability {
   Like = TrackPlayer.CAPABILITY_LIKE,
   Dislike = TrackPlayer.CAPABILITY_DISLIKE,
   Bookmark = TrackPlayer.CAPABILITY_BOOKMARK,
+////
+PlayMusic = MusicPlayer.CAPABILITY_PLAY,
+PlayFromIdMusic = MusicPlayer.CAPABILITY_PLAY_FROM_ID,
+PlayFromSearchMusic = MusicPlayer.CAPABILITY_PLAY_FROM_SEARCH,
+PauseMusic = MusicPlayer.CAPABILITY_PAUSE,
+StopMusic = MusicPlayer.CAPABILITY_STOP,
+SeekToMusic = MusicPlayer.CAPABILITY_SEEK_TO,
+SkipMusic = MusicPlayer.CAPABILITY_SKIP,
+SkipToNextMusic = MusicPlayer.CAPABILITY_SKIP_TO_NEXT,
+SkipToPreviousMusic = MusicPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+JumpForwardMusic = MusicPlayer.CAPABILITY_JUMP_FORWARD,
+JumpBackwardMusic = MusicPlayer.CAPABILITY_JUMP_BACKWARD,
+SetRatingMusic = MusicPlayer.CAPABILITY_SET_RATING,
+LikeMusic = MusicPlayer.CAPABILITY_LIKE,
+DislikeMusic = MusicPlayer.CAPABILITY_DISLIKE,
+BookmarkMusic = MusicPlayer.CAPABILITY_BOOKMARK,
 }
 
 export type ResourceObject = number
@@ -197,6 +217,15 @@ export enum State {
   Stopped = TrackPlayer.STATE_STOPPED,
   Buffering = TrackPlayer.STATE_BUFFERING,
   Connecting = TrackPlayer.STATE_CONNECTING,
+////
+NoneMusic = MusicPlayer.STATE_NONE,
+  ReadyMusic = MusicPlayer.STATE_READY,
+  PlayingMusic = MusicPlayer.STATE_PLAYING,
+  PausedMusic = MusicPlayer.STATE_PAUSED,
+  StoppedMusic = MusicPlayer.STATE_STOPPED,
+  BufferingMusic = MusicPlayer.STATE_BUFFERING,
+  ConnectingMusic = MusicPlayer.STATE_CONNECTING,
+
 }
 
 export interface TrackMetadataBase {

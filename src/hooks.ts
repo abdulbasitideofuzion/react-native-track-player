@@ -4,7 +4,7 @@ import TrackPlayer, { State, Event } from './index'
 /** Get current playback state and subsequent updatates  */
 export const usePlaybackState = () => {
   const [state, setState] = useState(State.None)
-
+  
   useEffect(() => {
     async function setPlayerState() {
       const playerState = await TrackPlayer.getState()
