@@ -13,9 +13,9 @@ import {
 } from './interfaces'
 
 // const { MusicPlayerModule: TrackPlayer } = NativeModules
+const { TrackPlayerModule: TrackPlayer } = NativeModules
 const { TrackPlayerModule: MusicPlayer } = NativeModules
 
-const { TrackPlayerModule: TrackPlayer } = NativeModules
 
 
 const emitter = Platform.OS !== 'android' ? new NativeEventEmitter(MusicPlayer) : DeviceEventEmitter
